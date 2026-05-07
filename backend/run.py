@@ -4,8 +4,10 @@ import time
 
 def main():
     print("Starting FastAPI Server...")
-    # Start the FastAPI server
-    server_process = subprocess.Popen([sys.executable, "-m", "uvicorn", "api.main:app"])
+    import os
+    port = os.environ.get("PORT", "8000")
+    # Start the FastAPI server on 0.0.0.0 and the correct port for cloud hosting
+    server_process = subprocess.Popen([sys.executable, "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", port])
     
     # Wait a few seconds to let the server fully start up
     time.sleep(4)
