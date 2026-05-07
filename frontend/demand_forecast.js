@@ -3,7 +3,7 @@ let zonesData = [];
     
     async function fetchSummary() {
       try {
-        const res = await fetch('http://localhost:8000/api/forecast/summary');
+        const res = await fetch('https://meter-mind.onrender.com/api/forecast/summary');
         const data = await res.json();
         
         let totalCurrent = 0;
@@ -70,7 +70,7 @@ let zonesData = [];
       if(activeEl) activeEl.classList.add('active');
       
       try {
-        const res = await fetch(`http://localhost:8000/api/forecast/zones/${zoneId}`);
+        const res = await fetch(`https://meter-mind.onrender.com/api/forecast/zones/${zoneId}`);
         const data = await res.json();
         drawForecastChart(data.forecast);
       } catch(e) {
