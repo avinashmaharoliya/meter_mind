@@ -12,7 +12,7 @@ from data_generator import _daily_from_monthly, _mutate  # type: ignore
 
 import os
 port = os.environ.get("PORT", "8000")
-BACKEND_URL = f"http://localhost:{port}/api/internal/ingest"
+BACKEND_URL = f"http://127.0.0.1:{port}/api/internal/ingest"
 
 # 5 specific bad actors for the demo
 BAD_ACTORS = [

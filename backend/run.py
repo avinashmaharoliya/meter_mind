@@ -9,8 +9,8 @@ def main():
     # Start the FastAPI server on 0.0.0.0 and the correct port for cloud hosting
     server_process = subprocess.Popen([sys.executable, "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", port])
     
-    # Wait a few seconds to let the server fully start up
-    time.sleep(4)
+    # Wait 15 seconds to let the server fully load heavy ML models into memory
+    time.sleep(15)
     
     print("Starting Live Simulator...")
     # Start the live simulator
