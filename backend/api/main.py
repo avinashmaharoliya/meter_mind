@@ -109,7 +109,11 @@ def ingest_data(readings: List[MeterReading]):
             
     system_state["last_updated"] = datetime.now().isoformat()
     return {"status": "success", "processed": len(readings)}
-
+    
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+    
 @app.post("/api/forecast/refresh")
 def refresh_forecasts():
     initialize_forecasts()
