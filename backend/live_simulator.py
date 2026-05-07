@@ -10,7 +10,9 @@ sys.path.append(str(base_dir / "ai_engine"))
 
 from data_generator import _daily_from_monthly, _mutate  # type: ignore
 
-BACKEND_URL = "http://localhost:8000/api/internal/ingest"
+import os
+port = os.environ.get("PORT", "8000")
+BACKEND_URL = f"http://localhost:{port}/api/internal/ingest"
 
 # 5 specific bad actors for the demo
 BAD_ACTORS = [
