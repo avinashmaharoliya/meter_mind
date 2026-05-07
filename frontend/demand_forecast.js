@@ -119,7 +119,7 @@ let zonesData = [];
       
       // x axis labels
       for(let i=0; i<n; i+=3) {
-        const d = new Date(forecastArr[i].timestamp);
+        const d = new Date(forecastArr[i].time);
         const t = mkEl('text', { x: xAt(i, n)-15, y: H-5, 'font-family': 'Share Tech Mono', 'font-size': 10, fill: 'var(--text2)' });
         t.textContent = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         svg.appendChild(t);

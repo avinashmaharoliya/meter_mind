@@ -28,6 +28,10 @@ def generate_mock_forecast(base_load: float) -> list:
 def get_prophet_forecast(zone_id: str, periods: int = 24) -> list:
     """Attempt to load and use the real Prophet model."""
     model_path = MODELS_DIR / f"prophet_{zone_id}.joblib"
+    # Hackathon Trick: If zone-specific model is missing, use z1 as the master model
+    if not model_path.exists():
+        model_path = MODELS_DIR / "prophet_z1.joblib"
+        
     if not model_path.exists():
         return None
         
