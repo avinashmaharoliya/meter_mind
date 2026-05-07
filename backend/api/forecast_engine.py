@@ -35,8 +35,10 @@ def get_prophet_forecast(zone_id: str, periods: int = 24) -> list:
         import pandas as pd
         # The forecasting person might use prophet or fbprophet depending on version
         try:
+            # pyrefly: ignore [missing-import]
             from prophet import Prophet
         except ImportError:
+            # pyrefly: ignore [missing-import]
             from fbprophet import Prophet
             
         model = joblib.load(model_path)
@@ -45,6 +47,10 @@ def get_prophet_forecast(zone_id: str, periods: int = 24) -> list:
         now = datetime.now().replace(minute=0, second=0, microsecond=0)
         future_dates = [now + timedelta(hours=i) for i in range(periods)]
         future_df = pd.DataFrame({'ds': future_dates})
+        
+        # Inject the custom regressors that the backend team added to the Prophet model
+        future_df['temperature'] = 33.0
+        future_df['summer_flag'] = 1
         
         forecast_df = model.predict(future_df)
         
