@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeterMind — BESCOM AI Intelligence Platform</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #050505;
+      --bg2: #0a0a0a;
+      --bg3: #111111;
+      --bg4: #1a1a1a;
+      --bg5: #1e0420;
+      --accent: #C967E8;
+      --accent-soft: rgba(201, 103, 232, 0.15);
+      --amber: #f0a020;
+      --amber2: #ffbe4a;
+      --amber-glow: rgba(240, 160, 32, 0.25);
+      --red: #ff2d55;
+      --red-glow: rgba(255, 45, 85, 0.2);
+      --orange: #ff6b35;
+      --green: #00e87a;
+      --blue: #00aaff;
+      --purple: #9b6bff;
+      --text: #d8e4f0;
+      --text2: #7a96b0;
+      --text3: #3a5470;
+      --border: rgba(240, 160, 32, 0.12);
+      --border2: rgba(240, 160, 32, 0.06);
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      cursor: none;
+    }
+
+    /* GLOW */
+    .bg-glow {
+      position: fixed;
+      width: 900px;
+      height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 103, 232, .12), transparent 70%);
+      top: -300px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+    }
+
+
+    #cur,
+    #cur2 {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #cur {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+    }
+
+    #cur2 {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(201, 103, 232, .5);
+    }
+
+    .navbar {
+      position: default;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(0, 0, 0, .35);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav-links div {
+      color: rgba(255, 255, 255, .65);
+      cursor: pointer;
+    }
+
+    .nav-links div:hover {
+      color: #fff;
+    }
+
+    /* ━━━ HEADER ━━━ */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 20px;
+      height: 52px;
+      background: var(--bg2);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .navbar::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: .4;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .logo-hex {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--accent), #d7aadc);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      animation: hexGlow 3s ease-in-out infinite alternate;
+      flex-shrink: 0;
+    }
+
+    @keyframes hexGlow {
+      from {
+        filter: drop-shadow(0 0 6px var(--amber-glow))
+      }
+
+      to {
+        filter: drop-shadow(0 0 20px var(--amber-glow)) drop-shadow(0 0 40px rgba(240, 160, 32, 0.1))
+      }
+    }
+
+    .logo-name {
+      font-family: 'Syne';
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .hstats {
+      display: flex;
+      gap: 28px;
+      align-items: center
+    }
+
+    .hs {
+      text-align: center
+    }
+
+    .hs-v {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Share Tech Mono', monospace;
+      line-height: 1;
+      color: var(--amber);
+    }
+
+    .hs-v.r {
+      color: var(--red)
+    }
+
+    .hs-v.g {
+      color: var(--green)
+    }
+
+    .hs-l {
+      font-size: 9px;
+      color: var(--text3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 1px
+    }
+
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 1px;
+      border: 1px solid #00e87a;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .2
+      }
+    }
+
+    .divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border2)
+    }
+
+    /* ━━━ MAIN ━━━ */
+    main {
+      display: flex;
+      flex: 1;
+      overflow: hidden
+    }
+
+    /* ━━━ MAP ━━━ */
+    .map-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* grid bg */
+    .map-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(240, 160, 32, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240, 160, 32, .035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+    }
+
+    /* radial vignette */
+    .map-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(6, 9, 15, .7) 100%);
+      pointer-events: none;
+    }
+
+    .map-label {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 3px;
+      z-index: 5;
+      text-transform: uppercase;
+    }
+
+    #svgMap {
+      width: 100%;
+      height: 100%
+    }
+
+    /* meter dot groups */
+    .mdot {
+      cursor: none;
+      transition: opacity .3s
+    }
+
+    .mdot:hover {
+      filter: brightness(1.3)
+    }
+
+    /* pulse animations */
+    @keyframes pulse1 {
+      0% {
+        r: 9;
+        opacity: .7
+      }
+
+      100% {
+        r: 28;
+        opacity: 0
+      }
+    }
+
+    @keyframes pulse2 {
+      0% {
+        r: 9;
+        opacity: .5
+      }
+
+      100% {
+        r: 20;
+        opacity: 0
+      }
+    }
+
+    .pr1 {
+      animation: pulse1 2.2s ease-out infinite
+    }
+
+    .pr2 {
+      animation: pulse2 2.2s ease-out infinite .8s
+    }
+
+    /* ━━━ SIDE PANEL ━━━ */
+    .panel {
+      width: 400px;
+      flex-shrink: 0;
+      background: var(--bg2);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* section header */
+    .sec-head {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--text3);
+      text-transform: uppercase;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--border2);
+      flex-shrink: 0;
+    }
+
+    /* ── DEFAULT LIST ── */
+    #pDefault {
+      display: flex;
+      flex-direction: column;
+      height: 100%
+    }
+
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      overflow-y: auto;
+      flex: 1
+    }
+
+    .alert-list::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .alert-list::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    .alert-list::-webkit-scrollbar-thumb {
+      background: var(--border)
+    }
+
+    .aitem {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 9px 12px;
+      cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      transition: all .18s ease;
+      animation: slideIn .35s ease both;
+    }
+
+    .aitem:hover {
+      border-color: var(--amber);
+      background: rgba(240, 160, 32, .04);
+      transform: translateX(-2px)
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    .asev {
+      width: 3px;
+      border-radius: 2px;
+      align-self: stretch;
+      flex-shrink: 0
+    }
+
+    .sc {
+      background: var(--red)
+    }
+
+    .sh {
+      background: var(--orange)
+    }
+
+    .sm {
+      background: var(--amber)
+    }
+
+    .ai {
+      flex: 1;
+      min-width: 0
+    }
+
+    .az {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .at {
+      font-size: 10px;
+      color: var(--text2);
+      font-family: 'Share Tech Mono', monospace;
+      margin-top: 2px
+    }
+
+    .ar {
+      text-align: right
+    }
+
+    .arl {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: var(--red)
+    }
+
+    .arc {
+      font-size: 9px;
+      color: var(--text3);
+      margin-top: 2px
+    }
+
+    /* legend */
+    .legend {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border2);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      flex-shrink: 0;
+    }
+
+    .leg {
+      font-size: 10px;
+      color: var(--text2);
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .leg-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%
+    }
+
+    /* ── DETAIL PANEL ── */
+    #pDetail {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto
+    }
+
+    #pDetail.on {
+      display: flex
+    }
+
+    #pDetail::-webkit-scrollbar {
+      width: 3px
+    }
+
+    #pDetail::-webkit-scrollbar-thumb {
+      background: var(--border)
+    }
+
+    .dhead {
+      padding: 14px 18px;
+      background: var(--bg5);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+
+    .dmid {
+      flex: 1
+    }
+
+    .dmid-id {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 1px
+    }
+
+    .dmid-zone {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 3px
+    }
+
+    .back {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      padding: 5px 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all .18s;
+      flex-shrink: 0;
+    }
+
+    .back:hover {
+      border-color: var(--amber);
+      color: var(--amber)
+    }
+
+    /* fingerprint badge */
+    .fp-badge {
+      margin: 16px;
+      padding: 16px;
+      border-radius: 4px;
+      border: 1px solid;
+      position: relative;
+      overflow: hidden;
+      animation: badgeIn .5s cubic-bezier(.34, 1.56, .64, 1) both;
+      flex-shrink: 0;
+    }
+
+    @keyframes badgeIn {
+      from {
+        opacity: 0;
+        transform: scale(.92) translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0)
+      }
+    }
+
+    .fp-badge::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: .05
+    }
+
+    .fp-badge::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent 80%, currentColor 100%, transparent 100%);
+      opacity: .04;
+      animation: spinBg 8s linear infinite;
+    }
+
+    @keyframes spinBg {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .bg-ghost {
+      border-color: var(--blue);
+      color: var(--blue)
+    }
+
+    .bg-ghost::before,
+    .bg-ghost::after {
+      background: var(--blue)
+    }
+
+    .bg-phase {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .bg-phase::before,
+    .bg-phase::after {
+      background: var(--red)
+    }
+
+    .bg-tamper {
+      border-color: var(--orange);
+      color: var(--orange)
+    }
+
+    .bg-tamper::before,
+    .bg-tamper::after {
+      background: var(--orange)
+    }
+
+    .bg-freeze {
+      border-color: var(--purple);
+      color: var(--purple)
+    }
+
+    .bg-freeze::before,
+    .bg-freeze::after {
+      background: var(--purple)
+    }
+
+    .bg-bleed {
+      border-color: var(--amber);
+      color: var(--amber)
+    }
+
+    .bg-bleed::before,
+    .bg-bleed::after {
+      background: var(--amber)
+    }
+
+    .fp-icon {
+      font-size: 30px;
+      margin-bottom: 8px;
+      display: block;
+      position: relative;
+      z-index: 1
+    }
+
+    .fp-name {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 1
+    }
+
+    .fp-desc {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 6px;
+      line-height: 1.55;
+      position: relative;
+      z-index: 1
+    }
+
+    /* confidence */
+    .conf-wrap {
+      padding: 0 16px 14px;
+      flex-shrink: 0
+    }
+
+    .conf-top {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+
+    .conf-pct {
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 700
+    }
+
+    .cbar-bg {
+      height: 5px;
+      background: var(--bg4);
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .cbar {
+      height: 100%;
+      border-radius: 3px;
+      width: 0%;
+      background: linear-gradient(135deg, var(--accent), #d7aadc);
+      transition: width 1.6s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    /* metrics */
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 16px 14px;
+      flex-shrink: 0;
+    }
+
+    .mc {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 10px 12px;
+      animation: fadeUp .35s ease both;
+    }
+
+    .mc:nth-child(2) {
+      animation-delay: .07s
+    }
+
+    .mc:nth-child(3) {
+      animation-delay: .14s
+    }
+
+    .mc:nth-child(4) {
+      animation-delay: .21s
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .mc-l {
+      font-size: 9px;
+      color: var(--text3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace
+    }
+
+    .mc-v {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: 'Share Tech Mono', monospace;
+      margin-top: 4px;
+      line-height: 1
+    }
+
+    .mc-v.r {
+      color: var(--red)
+    }
+
+    .mc-v.o {
+      color: var(--orange)
+    }
+
+    .mc-v.g {
+      color: var(--green)
+    }
+
+    .mc-v.b {
+      color: var(--blue);
+      font-size: 13px;
+      line-height: 1.4
+    }
+
+    /* chart */
+    .chart-wrap {
+      padding: 0 16px 14px;
+      flex-shrink: 0
+    }
+
+    .chart-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    #cChart {
+      width: 100%;
+      height: 110px;
+      display: block
+    }
+
+    /* action */
+    .action {
+      margin: 0 16px 16px;
+      background: var(--bg4);
+      border: 1px solid var(--accent-soft);
+      border-radius: 4px;
+      padding: 12px 14px;
+      animation: fadeUp .35s .3s ease both;
+      flex-shrink: 0;
+    }
+
+    .action-h {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      font-family: 'Share Tech Mono', monospace;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+    }
+
+    .action-t {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6
+    }
+
+    .action-f {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      margin-top: 8px;
+      letter-spacing: .5px;
+    }
+
+    /* ━━━ BOTTOM BAR ━━━ */
+    .bbar {
+      height: 38px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 28px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .bs {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      display: flex;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .bs-v {
+      color: var(--amber)
+    }
+
+    .bs-v.r {
+      color: var(--red)
+    }
+
+    .bs-v.g {
+      color: var(--green)
+    }
+
+    .scan-area {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+    }
+
+    .sbar {
+      width: 70px;
+      height: 2px;
+      background: var(--bg4);
+      border-radius: 1px;
+      overflow: hidden
+    }
+
+    .sbar-f {
+      height: 100%;
+      background: var(--accent);
+      animation: scanP 2.5s linear infinite
+    }
+
+    @keyframes scanP {
+      0% {
+        width: 0%
+      }
+
+      100% {
+        width: 100%
+      }
+    }
+
+    /* Intro loader */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity .8s ease;
+      gap: 20px;
+    }
+
+    #loader.hide {
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .loader-hex {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--accent), #d7aadc);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      animation: spin .8s ease-in-out both, hexGlow 2s ease-in-out infinite alternate .8s;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(-180deg) scale(0);
+        opacity: 0
+      }
+
+      to {
+        transform: rotate(0) scale(1);
+        opacity: 1
+      }
+    }
+
+    .loader-title {
+      font-family: 'Syne';
+      font-size: 20px;
+      font-weight: 800;
+      animation: fadeIn .6s .3s ease both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .loader-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      letter-spacing: 3px;
+      animation: fadeIn .6s .5s ease both;
+    }
+
+    .loader-bar-bg {
+      width: 240px;
+      height: 2px;
+      background: var(--bg3);
+      border-radius: 1px;
+      animation: fadeIn .4s .7s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    .loader-bar {
+      height: 100%;
+      background: linear-gradient(135deg, var(--accent), #d7aadc);
+      border-radius: 1px;
+      width: 0%;
+      transition: width .05s linear;
+    }
+
+    .loader-status {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 1px;
+      animation: fadeIn .4s .7s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    /* SVG zone label style */
+    .zlabel {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      fill: rgba(255, 255, 255, .08);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- LOADER -->
+  <div id="loader">
+
+    <div class="loader-hex">⚡</div>
+    <div class="loader-title">MeterMind</div>
+    <div class="loader-sub">BESCOM AI Intelligence Platform — Initializing</div>
+    <div class="loader-bar-bg">
+      <div class="loader-bar" id="lBar"></div>
+    </div>
+    <div class="loader-status" id="lStatus">Loading distribution network data...</div>
+
+  </div>
+  <div id="cur"></div>
+  <div id="cur2"></div>
+  <div class="bg-glow"></div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">
+      <div class="logo-hex">⚡</div>
+      <div class="logo-text">MeterMind</div>
+    </div>
+    <div class="hstats">
+      <div class="divider"></div>
+      <div class="hs">
+        <div class="hs-v">8.1M</div>
+        <div class="hs-l">Consumers</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v r" id="hLoss">31.4%</div>
+        <div class="hs-l">AT&C Loss</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v r">47</div>
+        <div class="hs-l">Active Alerts</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v r">₹2.8L</div>
+        <div class="hs-l">At Risk Today</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v g">23</div>
+        <div class="hs-l">High Confidence</div>
+      </div>
+      <div class="divider"></div>
+    </div>
+    <div class="nav-links">
+      <div onclick="window.location.href='home.html';" style="cursor:none;">Home</div>
+      <div onclick="window.location.href='demand_forecast.html';" style="cursor:none;">Demand Forecasting</div>
+      <div>Loss Fingerprinting</div>
+    </div>
+
+  </nav>
+  <!-- HEADER -->
+  <header>
+    <div class="live">
+      <div class="live-dot"></div>LIVE SCAN ACTIVE
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- MAP -->
+    <div class="map-wrap">
+      <div class="map-label">Bangalore Distribution Network — Real-Time Loss Detection</div>
+      <svg id="svgMap" viewBox="0 0 700 520" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(240,160,32,.15)" />
+            <stop offset="100%" stop-color="transparent" />
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- City boundary shape (approx Bangalore outline) -->
+        <path
+          d="M 200,75 L 310,60 L 420,68 L 520,110 L 580,190 L 600,300 L 570,410 L 480,465 L 370,480 L 245,465 L 155,400 L 120,300 L 130,190 Z"
+          fill="none" stroke="var(--accent-soft)" stroke-width="1.5" stroke-dasharray="10,5" />
+
+        <!-- Sub-zone outlines -->
+        <line x1="120" y1="270" x2="600" y2="270" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+        <line x1="120" y1="370" x2="600" y2="370" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+        <line x1="120" y1="170" x2="600" y2="170" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+        <line x1="220" y1="60" x2="220" y2="480" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+        <line x1="360" y1="60" x2="360" y2="480" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+        <line x1="490" y1="60" x2="490" y2="480" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+
+        <!-- Zone labels -->
+        <text x="132" y="148" class="zlabel">Peenya</text>
+        <text x="228" y="148" class="zlabel">Malleshwaram</text>
+        <text x="370" y="95" class="zlabel">Hebbal</text>
+        <text x="490" y="148" class="zlabel">Whitefield</text>
+        <text x="228" y="228" class="zlabel">Rajajinagar</text>
+        <text x="370" y="228" class="zlabel">City Centre</text>
+        <text x="490" y="228" class="zlabel">Indiranagar</text>
+        <text x="228" y="330" class="zlabel">Jayanagar</text>
+        <text x="370" y="330" class="zlabel">Koramangala</text>
+        <text x="490" y="310" class="zlabel">HSR Layout</text>
+        <text x="228" y="420" class="zlabel">Banashankari</text>
+        <text x="370" y="435" class="zlabel">Electronic City</text>
+
+        <!-- Central feeder hub -->
+        <circle cx="360" cy="270" r="40" fill="url(#centerGlow)" />
+        <circle cx="360" cy="270" r="8" fill="none" stroke="rgba(240,160,32,.4)" stroke-width="1" />
+        <circle cx="360" cy="270" r="4" fill="rgba(240,160,32,.5)" />
+        <circle cx="360" cy="270" r="2" fill="var(--amber)" />
+        <text x="370" y="258" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(240,160,32,.4)"
+          letter-spacing="1">MAIN FEEDER</text>
+
+        <!-- Feeder connection lines -->
+        <g stroke="rgba(240,160,32,.08)" stroke-width="1" stroke-dasharray="5,4">
+          <line x1="360" y1="270" x2="165" y2="140" />
+          <line x1="360" y1="270" x2="255" y2="138" />
+          <line x1="360" y1="270" x2="375" y2="92" />
+          <line x1="360" y1="270" x2="520" y2="162" />
+          <line x1="360" y1="270" x2="545" y2="295" />
+          <line x1="360" y1="270" x2="400" y2="350" />
+          <line x1="360" y1="270" x2="255" y2="355" />
+          <line x1="360" y1="270" x2="390" y2="440" />
+          <line x1="360" y1="270" x2="225" y2="415" />
+        </g>
+
+        <!-- RADAR SWEEP -->
+        <g style="transform-origin:360px 270px;animation:scanSweep 5s linear infinite">
+          <path d="M 360 270 L 560 270 A 200 200 0 0 0 360 70 Z" fill="none" stroke="var(--accent-soft)" />
+          <!-- sweep line -->
+          <line x1="360" y1="270" x2="560" y2="270" stroke="var(--accent-soft)" stroke-width="1.5"
+            style="transform-origin:360px 270px" />
+          <!-- sweep gradient -->
+          <path d="M 360 270 L 560 270 A 200 200 0 0 0 460 90 Z" fill="rgba(240,160,32,.03)" />
+        </g>
+        <style>
+          @keyframes scanSweep {
+            to {
+              transform: rotate(360deg)
+            }
+          }
+        </style>
+
+        <!-- Scan rings -->
+        <circle cx="360" cy="270" r="90" fill="none" stroke="rgba(240,160,32,.07)" stroke-width="1" />
+        <circle cx="360" cy="270" r="170" fill="none" stroke="rgba(240,160,32,.05)" stroke-width="1" />
+        <circle cx="360" cy="270" r="240" fill="none" stroke="rgba(240,160,32,.03)" stroke-width="1" />
+
+        <!-- ═══ METER DOTS ═══ -->
+        <!-- Dynamic dots will go here -->
+
+        <!-- Selection ring (initially hidden) -->
+        <circle id="selRing" cx="0" cy="0" r="16" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="4,3"
+          opacity="0" style="transition:all .3s ease" />
+
+        <!-- Map legend -->
+        <g transform="translate(106,390)">
+          <rect width="105" height="100" rx="3" fill="rgba(11,16,24,.92)" stroke="rgba(240,160,32,.12)"
+            stroke-width="1" />
+          <text x="8" y="14" font-family="Share Tech Mono,monospace" font-size="8.5" fill="rgba(120,160,200,.4)"
+            letter-spacing="1.5">FINGERPRINT</text>
+          <circle cx="14" cy="26" r="4.5" fill="#ff2d55" />
+          <text x="24" y="30" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(200,220,240,.6)">Phase
+            Bypass</text>
+          <circle cx="14" cy="42" r="4.5" fill="#ff6b35" />
+          <text x="24" y="46" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(200,220,240,.6)">Meter
+            Tamper</text>
+          <circle cx="14" cy="58" r="4.5" fill="#00aaff" />
+          <text x="24" y="62" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(200,220,240,.6)">Ghost
+            Load</text>
+          <circle cx="14" cy="74" r="4.5" fill="#9b6bff" />
+          <text x="24" y="78" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(200,220,240,.6)">Billing
+            Freeze</text>
+          <circle cx="14" cy="90" r="4.5" fill="#f0a020" />
+          <text x="24" y="94" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(200,220,240,.6)">Slow
+            Bleed</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="panel">
+
+      <!-- DEFAULT -->
+      <div id="pDefault">
+        <div class="sec-head">Today's Priority Alerts — Click Any Alert or Map Dot</div>
+        <div class="alert-list" id="alertList"></div>
+        <div class="legend">
+          <div class="leg">
+            <div class="leg-dot" style="background:#ff2d55"></div>Phase Bypass
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background:#ff6b35"></div>Meter Tamper
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background:#00aaff"></div>Ghost Load
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background:#9b6bff"></div>Billing Freeze
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background:#f0a020"></div>Slow Bleed
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL -->
+      <div id="pDetail">
+        <div class="dhead">
+          <div class="dmid">
+            <div class="dmid-id" id="dId">—</div>
+            <div class="dmid-zone" id="dZone">—</div>
+          </div>
+          <button class="back" onclick="goBack()">← BACK</button>
+        </div>
+
+        <div class="fp-badge" id="fpBadge">
+          <span class="fp-icon" id="fpIcon">🌙</span>
+          <div class="fp-name" id="fpName">Ghost Load</div>
+          <div class="fp-desc" id="fpDesc">Commercial machinery operating exclusively during nighttime hours via
+            unmetered connection.</div>
+        </div>
+
+        <div class="conf-wrap">
+          <div class="conf-top">
+            <span>Detection Confidence</span>
+            <span class="conf-pct" id="confPct">0%</span>
+          </div>
+          <div class="cbar-bg">
+            <div class="cbar" id="cbar"></div>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="mc">
+            <div class="mc-l">Revenue Lost</div>
+            <div class="mc-v r" id="mRev">₹0</div>
+          </div>
+          <div class="mc">
+            <div class="mc-l">Days Active</div>
+            <div class="mc-v o" id="mDays">0</div>
+          </div>
+          <div class="mc">
+            <div class="mc-l">Confidence</div>
+            <div class="mc-v g" id="mConf">0%</div>
+          </div>
+          <div class="mc">
+            <div class="mc-l">Type Detected</div>
+            <div class="mc-v b" id="mType">—</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="chart-title" id="cTitle">Consumption Pattern</div>
+          <svg id="cChart" viewBox="0 0 368 110"></svg>
+        </div>
+
+        <div class="action">
+          <div class="action-h">⚡ Recommended Field Action</div>
+          <div class="action-t" id="aText">—</div>
+          <div class="action-f" id="aForm">—</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <div class="bbar">
+    <div class="bs">METERS SCANNED <span class="bs-v" id="bScanned">0</span></div>
+    <div class="bs">FLAGGED <span class="bs-v r">47</span></div>
+    <div class="bs">CONFIRMED THEFT <span class="bs-v r">12</span></div>
+    <div class="bs">RECOVERED <span class="bs-v g">₹14.2L</span></div>
+    <div class="bs">MODEL ACCURACY <span class="bs-v">82.4%</span></div>
+    <div class="scan-area">
+      SCANNING <span id="bZone">KORAMANGALA</span>
+      <div class="sbar">
+        <div class="sbar-f"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="loss_fingerprinting.js"></script>
+</body>
+
+</html>

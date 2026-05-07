@@ -1,0 +1,12 @@
+                precision    recall  f1-score   support
+
+Billing Freeze      1.000     1.000     1.000       330
+    Ghost Load      1.000     1.000     1.000       330
+  Meter Tamper      1.000     1.000     1.000       330
+        Normal      1.000     1.000     1.000       330
+  Phase Bypass      0.997     1.000     0.998       330
+    Slow Bleed      1.000     0.997     0.998       330
+
+      accuracy                          0.999      1980
+     macro avg      0.999     0.999     0.999      1980
+  weighted avg      0.999     0.999     0.999      1980

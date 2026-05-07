@@ -1,0 +1,31 @@
+import subprocess
+import sys
+import time
+
+def main():
+    print("Starting FastAPI Server...")
+    # Start the FastAPI server
+    server_process = subprocess.Popen([sys.executable, "-m", "uvicorn", "api.main:app"])
+    
+    # Wait a few seconds to let the server fully start up
+    time.sleep(4)
+    
+    print("Starting Live Simulator...")
+    # Start the live simulator
+    simulator_process = subprocess.Popen([sys.executable, "live_simulator.py"])
+    
+    try:
+        # Keep the launcher running and waiting
+        server_process.wait()
+        simulator_process.wait()
+    except KeyboardInterrupt:
+        # Handle Ctrl+C gracefully
+        print("\nShutting down both processes...")
+        server_process.terminate()
+        simulator_process.terminate()
+        server_process.wait()
+        simulator_process.wait()
+        print("Shutdown complete.")
+
+if __name__ == "__main__":
+    main()

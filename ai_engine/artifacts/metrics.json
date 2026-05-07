@@ -1,0 +1,111 @@
+{
+  "classification_report": {
+    "Billing Freeze": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 330.0
+    },
+    "Ghost Load": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 330.0
+    },
+    "Meter Tamper": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 330.0
+    },
+    "Normal": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 330.0
+    },
+    "Phase Bypass": {
+      "precision": 0.9969788519637462,
+      "recall": 1.0,
+      "f1-score": 0.9984871406959153,
+      "support": 330.0
+    },
+    "Slow Bleed": {
+      "precision": 1.0,
+      "recall": 0.996969696969697,
+      "f1-score": 0.9984825493171472,
+      "support": 330.0
+    },
+    "accuracy": 0.9994949494949495,
+    "macro avg": {
+      "precision": 0.999496475327291,
+      "recall": 0.9994949494949495,
+      "f1-score": 0.9994949483355104,
+      "support": 1980.0
+    },
+    "weighted avg": {
+      "precision": 0.999496475327291,
+      "recall": 0.9994949494949495,
+      "f1-score": 0.9994949483355103,
+      "support": 1980.0
+    }
+  },
+  "labels": [
+    "Billing Freeze",
+    "Ghost Load",
+    "Meter Tamper",
+    "Normal",
+    "Phase Bypass",
+    "Slow Bleed"
+  ],
+  "confusion_matrix": [
+    [
+      330,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      330,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      330,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      330,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      330,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      329
+    ]
+  ]
+}

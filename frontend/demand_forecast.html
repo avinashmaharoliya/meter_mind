@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demand Forecasting | MeterMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030508;
+      --bg2: #080c13;
+      --bg3: #0c121c;
+      --bg4: #121a26;
+      --bg5: #182232;
+      --border: rgba(120, 160, 200, 0.08);
+      --border2: rgba(120, 160, 200, 0.15);
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --accent: #00f0ff;
+      --accent-soft: rgba(0, 240, 255, 0.15);
+      --red: #ff2d55;
+      --orange: #ff6b35;
+      --amber: #f0a020;
+      --green: #00ff9d;
+      --blue: #00aaff;
+      --purple: #9b6bff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    
+    /* Glowing background accent */
+    .bg-glow {
+      position: fixed;
+      top: -20vh;
+      left: 10vw;
+      width: 80vw;
+      height: 60vh;
+      background: radial-gradient(ellipse at center, rgba(0,240,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navbar */
+    .navbar {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      background: rgba(3, 5, 8, 0.8);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      position: relative;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-right: 40px;
+    }
+    .logo-hex {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent), #d7aadc);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg);
+      font-weight: 800;
+      font-size: 14px;
+      font-family: 'Share Tech Mono';
+    }
+    .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      gap: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .nav-links div {
+      color: var(--text3);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav-links div:hover { color: var(--text); }
+    .nav-links .active { color: var(--accent); }
+
+    /* Header */
+    header {
+      height: 40px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 10;
+      position: relative;
+    }
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse { to { opacity: 0.3; transform: scale(0.8); } }
+
+    /* Main layout */
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Left Panel: Zone List */
+    .left-panel {
+      width: 380px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border2);
+    }
+    .ph-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .ph-val {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .zone-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .zone-list::-webkit-scrollbar { width: 3px; }
+    .zone-list::-webkit-scrollbar-thumb { background: var(--border); }
+    
+    .zitem {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .zitem:hover, .zitem.active {
+      border-color: var(--accent);
+      background: rgba(0, 240, 255, 0.04);
+      transform: translateX(2px);
+    }
+    .zi-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .zi-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .zi-id {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+    }
+    .zi-stats {
+      text-align: right;
+    }
+    .zi-load {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .zi-risk {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+    .risk-high { color: var(--red); }
+    .risk-elevated { color: var(--orange); }
+    .risk-normal { color: var(--green); }
+    
+    /* Right Panel: Chart Area */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+    
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .dcard {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dcard::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent);
+    }
+    .dc-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text2);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .dc-val {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 8px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    
+    .chart-container {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      flex: 1;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .ch-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .ch-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+    .ch-legend {
+      display: flex;
+      gap: 16px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--text2);
+    }
+    .leg-item { display: flex; align-items: center; gap: 6px; }
+    .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+    
+    #forecastChart {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Loader */
+    #loader {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: var(--bg);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      transition: opacity .8s ease;
+    }
+    #loader.hide { opacity: 0; pointer-events: none; }
+    .loader-hex {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--accent), #d7aadc);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--bg);
+      font-weight: 800; font-size: 24px;
+      animation: pulseHex 1.5s infinite alternate;
+    }
+    @keyframes pulseHex { to { transform: scale(1.1); box-shadow: 0 0 20px var(--accent); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .loader-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; animation: fadeIn .6s .2s ease both; }
+    .loader-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text3); letter-spacing: 3px; animation: fadeIn .6s .5s ease both; }
+    .loader-bar-bg { width: 240px; height: 2px; background: var(--bg3); border-radius: 1px; animation: fadeIn .4s .7s ease both; opacity: 0; animation-fill-mode: both; }
+    .loader-bar { height: 100%; background: linear-gradient(135deg, var(--accent), #d7aadc); border-radius: 1px; width: 0%; transition: width .05s linear; }
+    .loader-status { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 1px; animation: fadeIn .4s .7s ease both; opacity: 0; animation-fill-mode: both; }
+  </style>
+</head>
+<body>
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-hex">⚡</div>
+    <div class="loader-title">MeterMind</div>
+    <div class="loader-sub">BESCOM AI Intelligence Platform — Initializing Forecast Engine</div>
+    <div class="loader-bar-bg">
+      <div class="loader-bar" id="lBar"></div>
+    </div>
+    <div class="loader-status" id="lStatus">Connecting to ML models...</div>
+  </div>
+  <div class="bg-glow"></div>
+  
+  <nav class="navbar">
+    <div class="logo">
+      <div class="logo-hex">⚡</div>
+      <div class="logo-text">MeterMind</div>
+    </div>
+    <div class="nav-links">
+      <div onclick="window.location.href='home.html';">Home</div>
+      <div class="active">Demand Forecasting</div>
+      <div onclick="window.location.href='loss_fingerprinting.html';">Loss Fingerprinting</div>
+    </div>
+  </nav>
+  
+  <header>
+    <div class="live"><div class="live-dot"></div>LIVE PROPHET FORECAST ACTIVE</div>
+  </header>
+  
+  <main>
+    <div class="left-panel">
+      <div class="panel-header">
+        <div class="ph-title">Total Grid Load</div>
+        <div class="ph-val" id="totalLoad">-- MW</div>
+      </div>
+      <div class="zone-list" id="zoneList">
+        <!-- Zones injected here -->
+      </div>
+    </div>
+    
+    <div class="right-panel">
+      <div class="dashboard-cards">
+        <div class="dcard">
+          <div class="dc-label">Peak Forecast Time</div>
+          <div class="dc-val" style="color:var(--orange)" id="peakTime">--:--</div>
+        </div>
+        <div class="dcard">
+          <div class="dc-label">Peak Load Expected</div>
+          <div class="dc-val" style="color:var(--accent)" id="peakLoad">-- MW</div>
+        </div>
+        <div class="dcard">
+          <div class="dc-label">Risk Status</div>
+          <div class="dc-val" id="gridRisk">--</div>
+        </div>
+      </div>
+      
+      <div class="chart-container">
+        <div class="chart-header">
+          <div>
+            <div class="ch-title" id="cZoneName">System Wide Forecast</div>
+            <div class="ch-sub">24-Hour Predictive Interval Model</div>
+          </div>
+          <div class="ch-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div> Predicted</div>
+            <div class="leg-item"><div class="leg-dot" style="background:rgba(0,240,255,0.15); border:1px solid var(--accent-soft)"></div> 95% Confidence Interval</div>
+          </div>
+        </div>
+        <svg id="forecastChart" viewBox="0 0 800 400" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+  </main>
+  
+  <script src="demand_forecast.js"></script>
+</body>
+</html>
