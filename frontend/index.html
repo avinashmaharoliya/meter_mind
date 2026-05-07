@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>MeterMind — BESCOM Intelligence Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
+
+<style>
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+:root{
+    --accent:#C967E8;
+    --accent-soft:rgba(201,103,232,0.15);
+  
+    --gold:#E8A62E;
+  
+    --text-dim:rgba(255,255,255,.65);
+    --text-soft:rgba(255,255,255,.5);
+  
+    --border:rgba(255,255,255,.08);
+  }
+body{
+  background:#050505;
+  color:#fff;
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+/* CURSOR */
+#cur,#cur2{
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+#cur{width:8px;height:8px;background:var(--accent);}
+#cur2{width:34px;height:34px;border:1px solid rgba(201,103,232,.5);}
+/* GLOW */
+.bg-glow{
+  position:fixed;
+  width:900px;
+  height:900px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(201,103,232,.12),transparent 70%);
+  top:-300px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:-1;
+}
+/* NAVBAR */
+.navbar{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.05);
+  z-index:100;
+}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-hex{
+    width:34px;height:34px;
+    background:linear-gradient(135deg,var(--accent),#d7aadc);
+    clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+    animation:hexGlow 3s ease-in-out infinite alternate;
+    flex-shrink:0;
+}
+  @keyframes hexGlow{
+    from{filter:drop-shadow(0 0 6px var(--amber-glow))}
+    to{filter:drop-shadow(0 0 20px var(--amber-glow)) drop-shadow(0 0 40px rgba(240,160,32,0.1))}
+  }
+.logo-text{font-family:'Syne';font-size:20px;font-weight:800;}
+.nav-links{display:flex;gap:28px;}
+.nav-links div{color:rgba(255,255,255,.65);cursor:none;}
+.nav-links div:hover{color:#fff;}
+/* HERO */
+.hero{
+  text-align:center;
+  padding-top:160px;
+}
+.hero h1{
+  font-family:'Syne';
+  font-size:clamp(60px,9vw,120px);
+  letter-spacing:-5px;
+}
+.hero span{
+  background:linear-gradient(135deg,#fff,#FA93FA,#C967E8);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{
+  max-width:800px;
+  margin:30px auto;
+  color:rgba(255,255,255,.7);
+}
+.hero button{
+  padding:14px 28px;
+  border:none;
+  border-radius:999px;
+  background:#fff;
+  color:#000;
+  font-weight:700;
+}
+/* VIDEO */
+.video-container{margin-top:-120px;}
+#hero-video{width:100%;mix-blend-mode:screen;}
+/* ================CRISIS SECTION FINAL========================= */
+.crisis-section{
+    max-width:1450px;
+    margin:auto;
+    padding:140px 24px;
+  }
+.crisis-grid{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:90px;
+    align-items:center;
+}
+  /* LEFT */
+.crisis-tag{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:4px;
+    margin-bottom:24px;
+}  
+.hero-tag{
+    gap:14px;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:4px;
+    margin-bottom:24px;
+}
+.crisis-tag span,.hero-tag span{
+    width:32px;
+    height:1px;
+    background:var(--accent);
+}  
+  .crisis-left h1{
+    font-family:'Syne';
+    font-size:clamp(70px,9vw,90px);
+    line-height:.9;
+    letter-spacing:-4px;
+    margin-bottom:30px;
+}  
+.muted{
+    color:rgba(180,200,230,.7);
+    line-height:1.9;
+    font-size:16px;
+    margin-bottom:18px;
+}  
+.small{font-size:14px;opacity:.8;}  
+.highlight-line{
+    margin:40px 0;
+    padding-left:20px;
+    border-left:3px solid var(--accent-soft);
+    color:var(--accent);
+    font-family:'Syne';
+    font-size:36px;
+    letter-spacing:2px;
+}
+  /* RIGHT CARD */
+.crisis-box{
+    padding:34px;
+    border-radius:20px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+    border:1px solid var(--border);
+    box-shadow:0 25px 80px rgba(0,0,0,.5);
+}
+.box-header{
+    font-size:12px;
+    letter-spacing:2px;
+    color:rgba(255,255,255,.5);
+    margin-bottom:30px;
+}  
+  /* BARS */  
+.bar-group{margin-bottom:26px;}  
+.bar-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:rgba(255,255,255,.6);
+    margin-bottom:6px;
+}  
+.bar-bg{
+    height:10px;
+    background:rgba(255,255,255,.08);
+    border-radius:999px;
+    overflow:hidden;
+}  
+.bar-fill{
+    height:100%;
+    border-radius:999px;
+}  
+.blue{background:linear-gradient(90deg,#3ba0ff,#5bc0ff);}
+.green{background:linear-gradient(90deg,#00ff95,#00c26e);}
+.red{background:linear-gradient(90deg,#ff3b3b,#ff6b6b);}  
+.bar-value{
+    text-align:right;
+    font-size:12px;
+    color:rgba(255,255,255,.6);
+    margin-top:6px;
+}  
+.red-text{color:#ff4d4d;}  
+.box-footer{
+    margin-top:20px;
+    font-size:12px;
+    color:rgba(255,255,255,.6);
+    line-height:1.6;
+}
+    /* RESPONSIVE */
+  
+@media(max-width:1000px){
+    .crisis-grid{
+      grid-template-columns:1fr;
+      gap:60px;
+    }
+}
+/* =========================
+   LOSS INTRO (CLEAN)
+========================= */
+
+.loss-intro{
+    max-width:1450px;
+    margin:auto;
+    padding:120px 24px 100px;
+    
+  }
+  
+  /* GRID */
+  
+  .loss-intro-grid{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:80px;
+    align-items:center;
+  }
+  
+  /* LEFT */
+  
+  .loss-mini-tag{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:4px;
+    margin-bottom:24px;
+  }
+  
+  .loss-mini-tag span{
+    width:30px;
+    height:1px;
+    background:var(--accent);
+  }
+  
+  .loss-intro-left h1{
+    font-family:'Syne';
+    font-size:clamp(70px,9vw,50px);
+    line-height:.9;
+    letter-spacing:-3px;
+  }
+  
+  /* RIGHT */
+  
+  .loss-intro-right{
+    border-left:1px solid rgba(255,255,255,.08);
+    padding-left:30px;
+  }
+  
+  .loss-intro-right p{
+    font-size:15px;
+    line-height:1.9;
+  }
+  
+  /* COLORS (reuse your theme) */
+  
+  .highlight{
+    color:var(--accent);
+  }
+  
+  /* RESPONSIVE */
+  
+  @media(max-width:1000px){
+    .loss-intro-grid{
+      grid-template-columns:1fr;
+      gap:60px;
+    }
+  
+    .loss-intro-right{
+      border-left:none;
+      padding-left:0;
+    }
+  }
+  /* LIST CONTAINER */
+
+.loss-list{
+    margin-top:80px;
+    border:1px solid rgba(255,255,255,.06);
+    
+
+  }
+  
+  /* ROW */
+  
+  .loss-item{
+    border-bottom:1px solid rgba(255,255,255,.05);
+    transition:.4s;
+  }
+  
+  /* MAIN ROW */
+  
+  .loss-main{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:30px 40px;
+    cursor:none;
+  }
+  
+  /* LEFT */
+  
+  .loss-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+  }
+  
+  .loss-id{
+    font-size:12px;
+    color:rgba(255,255,255,.3);
+  }
+  
+  .loss-icon{
+    font-size:20px;
+  }
+  
+  .loss-left h3{
+    font-family:'Syne';
+    font-size:22px;
+  }
+  
+  .loss-left p{
+    font-size:14px;
+    color:rgba(255,255,255,.6);
+  }
+  
+  .expand-text{
+    font-size:12px;
+    color:var(--accent);
+    margin-top:6px;
+  }
+  
+  /* RIGHT */
+  
+  .loss-right{
+    font-family:'Syne';
+    font-size:32px;
+    text-align:right;
+  }
+  
+  .loss-right span{
+    display:block;
+    font-size:10px;
+    letter-spacing:2px;
+    color:rgba(255,255,255,.5);
+  }
+  
+  /* EXPAND */
+  
+  .loss-expand{
+    max-height:0;
+    overflow:hidden;
+    padding:0 40px;
+    color:rgba(255,255,255,.7);
+    transition:.4s;
+  }
+  
+  /* ACTIVE */
+  
+  .loss-item:hover{
+    border:1px solid var(--accent);
+    background:linear-gradient(90deg,var(--accent-soft),transparent);
+  }
+  
+  .loss-item.active .loss-expand{
+    max-height:200px;
+    padding:20px 40px;
+  }
+  /* =========================
+   INSIGHT SECTION
+========================= */
+
+.insight-section{
+    max-width:1450px;
+    margin:auto;
+    padding:120px 24px;
+  }
+  
+  .insight-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    align-items:center;
+  }
+  
+  /* LEFT CARD */
+  
+  .insight-card{
+    padding:30px;
+    border-radius:18px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+  }
+  
+  .card-header{
+    font-size:12px;
+    color:rgba(255,255,255,.5);
+    margin-bottom:20px;
+  }
+  
+  /* FAKE CHART */
+  
+  .chart-bar{
+    height:60px;
+    background:linear-gradient(90deg,#3ba0ff,#5bc0ff);
+    opacity:.3;
+    border-radius:8px;
+    margin-bottom:20px;
+  }
+  
+  /* FINGERPRINT TITLE */
+  
+  .fingerprint-box{
+    font-family:'Syne';
+    font-size:26px;
+    color:var(--accent);    
+    margin-bottom:20px;
+  }
+  
+  .fingerprint-box .sub{
+    font-size:11px;
+    letter-spacing:2px;
+    color:rgba(255,255,255,.5);
+    margin-top:6px;
+  }
+  
+  /* GRID INFO */
+  
+  .info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:20px;
+  }
+  
+  .info-grid div{
+    background:rgba(255,255,255,.04);
+    padding:14px;
+    border-radius:8px;
+  }
+  
+  .info-grid span{
+    display:block;
+    font-size:10px;
+    color:rgba(255,255,255,.5);
+  }
+  
+  .info-grid b{
+    font-size:14px;
+  }
+  
+  /* ACTION */
+  
+  .action-box{
+    border:1px solid var(--accent-soft);
+    padding:14px;
+    border-radius:8px;
+    font-size:13px;
+    color:rgba(255,255,255,.7);
+  }
+  
+  /* RIGHT TEXT */
+  
+  .insight-text p{
+    margin-bottom:20px;
+  }
+  
+  .insight-highlight{
+    margin-top:30px;
+    padding:20px;
+    border-left:3px solid var(--accent-soft);
+    color:var(--accent);
+    font-size:14px;
+    line-height:1.8;
+  }
+  
+  /* RESPONSIVE */
+  
+  @media(max-width:1000px){
+    .insight-grid{
+      grid-template-columns:1fr;
+    }
+  }
+  /* =========================
+   NUMBERS SECTION
+========================= */
+
+.numbers-section{
+    max-width:1450px;
+    margin:auto;
+    padding:120px 24px;
+  }
+  
+  /* HEADER */
+  
+  .numbers-tag{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:4px;
+    margin-bottom:20px;
+  }
+  
+  .numbers-tag span{
+    width:30px;
+    height:1px;
+    background:var(--accent);
+  }
+  
+  .numbers-header h1{
+    font-family:'Syne';
+    font-size:clamp(60px,8vw,110px);
+    line-height:.95;
+    letter-spacing:-3px;
+    margin-bottom:60px;
+  }
+  
+  /* GRID */
+  
+  .numbers-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border:1px solid rgba(255,255,255,.06);
+  }
+  
+  /* CARD */
+  
+  .num-card{
+    padding:40px;
+    border-right:1px solid rgba(255,255,255,.05);
+    border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  
+  .num-card h2{
+    font-family:'Syne';
+    font-size:42px;
+    margin-bottom:10px;
+  }
+  
+  .num-card h4{
+    font-size:14px;
+    margin-bottom:10px;
+    color:#fff;
+  }
+  
+  .num-card p{
+    font-size:13px;
+    color:rgba(255,255,255,.6);
+    line-height:1.6;
+  }
+.green,
+.accent{
+  color:var(--accent);
+}
+  
+  
+  /* RESPONSIVE */
+  
+  @media(max-width:1000px){
+    .numbers-grid{
+      grid-template-columns:1fr;
+    }
+  
+    .num-card{
+      border-right:none;
+    }
+  }
+  /* UNIFIED COLORS */
+
+
+.c-orange,
+.c-purple,
+.c-blue,
+.c-yellow{
+  color:var(--accent);
+}
+.c-orange:hover,
+.c-purple:hover,
+.c-blue:hover,
+.c-yellow:hover{
+  color:white;
+}
+.loss-expand{
+    max-height:0;
+    overflow:hidden;
+    padding:0 40px;
+    color:rgba(255,255,255,.7);
+    transition:max-height .5s ease, padding .3s ease;
+  }
+  
+  .loss-item.active .loss-expand{
+    max-height:220px;
+    padding:20px 40px;
+  }
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur2"></div>
+<div class="bg-glow"></div>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-hex">⚡</div>
+    <div class="logo-text">MeterMind</div>
+  </div>
+  <div class="nav-links">
+    <div>Home</div>
+    <div onclick="window.location.href='demand_forecast.html';" style="cursor:none;">Demand Forecasting</div>
+    <div onclick="window.location.href='loss_fingerprinting.html';" style="cursor:none;">Loss Fingerprinting</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero reveal">
+    <div class="hero-tag">
+        <span></span>
+       --  BESCOM AI Intelligence Platform --      
+    </div> 
+  <h1>Meter<br><span>Mind</span></h1>
+  <p>· LOSS FINGERPRINTING · DEMAND PREDICTION · FIELD INTELLIGENCE</p>
+  <p>BESCOM has 81 lakh smart meters collecting data every 15 minutes. The data exists.MeterMind diagnoses not just that electricity is being stolen, but exactly what's happening, for how long, and what to do about it.</p>
+
+</section>
+<div class="video-container">
+  <video id="hero-video" autoplay muted loop></video>
+</div>
+<!-- CRISIS -->
+<section class="crisis-section reveal">
+    <div class="crisis-grid">
+      <!-- LEFT -->
+      <div class="crisis-left">
+        <div class="crisis-tag">
+          <span></span>
+          01 — THE SCALE OF THE PROBLEM
+        </div> 
+        <h1>
+          INDIA'S INVISIBLE<br>
+          FINANCIAL CRISIS
+        </h1>
+        <p class="muted">
+          BESCOM pushes electricity to 81 lakh homes, offices, and factories across Bangalore.
+          For every 100 units they send out — only 65 to 70 units are billed and paid for.
+        </p>
+        <p class="muted">
+          The rest simply vanishes. Stolen through wire taps. Manipulated through magnets near meters.
+          Frozen in billing systems. Running factories through unmetered night connections.
+        </p>
+        <div class="highlight-line">
+          30–35 UNITS DISAPPEAR FOR EVERY 100 SENT.
+        </div>
+        <p class="muted small">
+          Traditional detection methods are complaint-based, random, and reactive.
+          By the time theft is identified, months of revenue are already gone.
+          The problem isn't data — smart meters send 96 readings per day.
+          The problem is having no brain to understand what those readings mean.
+        </p>
+      </div>
+      <!-- RIGHT DASHBOARD -->
+      <div class="crisis-right">
+        <div class="crisis-box">
+          <div class="box-header">
+            FEEDER BALANCE — ZONE 5C, KORAMANGALA
+          </div>
+          <!-- BAR 1 -->
+          <div class="bar-group">
+            <div class="bar-label">
+              <span>Units Pushed Into Network</span>
+              <span>100%</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill blue" style="width:100%"></div>
+            </div>
+            <div class="bar-value">1000 units</div>
+          </div>
+          <!-- BAR 2 -->
+          <div class="bar-group">
+            <div class="bar-label">
+              <span>Units Billed & Collected</span>
+              <span>68%</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill green" style="width:68%"></div>
+            </div>
+            <div class="bar-value">680 units</div>
+          </div>
+          <!-- BAR 3 -->
+          <div class="bar-group">
+            <div class="bar-label">
+              <span>Units Lost / Stolen / Unaccounted</span>
+              <span>32%</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill red" style="width:32%"></div>
+            </div>
+            <div class="bar-value red-text">320 units</div>
+          </div>
+          <div class="box-footer">
+            AT&C Loss: <span class="red-text">30–35%</span><br>
+            Revenue loss per year: <span class="red-text">USD 4.5B</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+<!-- LOSS FINGERPRINTING -->
+<section class="loss-intro reveal">
+
+    <div class="loss-intro-grid">
+      <!-- LEFT SIDE -->  
+      <div class="loss-intro-left">  
+        <div class="loss-mini-tag">
+          <span></span>
+          03 — THE MVP INNOVATION
+        </div>
+        <h1>
+          LOSS<br>
+          FINGERPRINTING
+        </h1>
+      </div>
+      <!-- RIGHT SIDE -->
+      <div class="loss-intro-right">
+        <p class="muted">Every existing solution asks the same question:</p>
+        <p class="highlight">
+          "Is this meter suspicious? Yes or No."
+        </p>
+        <br>
+        <p class="muted">MeterMind asks a completely different question:</p>
+        <p class="highlight">
+          "What is happening at this meter,<br>
+          how long has it been happening,<br>
+          how much has it cost BESCOM,<br>
+          and exactly what should the inspector do?"
+        </p>  
+        <br>  
+        <p class="muted">
+          Different types of theft leave different recognizable patterns —
+          like diseases leaving different symptoms.
+        </p>
+        <p class="muted">
+          We call these patterns <span class="highlight">Loss Fingerprints.</span>
+        </p>
+      </div>
+    </div>
+    <div class="loss-list">
+
+        <!-- ITEM -->
+        <div class="loss-item">
+      
+          <div class="loss-main" onclick="toggleLoss(this)">
+      
+            <div class="loss-left">
+              <span class="loss-id">01</span>
+              <span class="loss-icon">⚡</span>
+      
+              <div>
+                <h3>PHASE BYPASS</h3>
+                <p>A wire tapped before the meter — only 2 of 3 phases measured.</p>
+                <div class="loss-expand">
+                    <p>
+                      Consumption drops sharply to ~66% of normal usage and stays constant.
+                      This indicates one phase is bypassed in a three-phase connection.
+                    </p>
+                    <p>
+                      The AI detects this sudden step-change and flags it within days.
+                    </p>
+                  </div>
+              </div>
+            </div>
+      
+            <div class="loss-right c-blue">
+              84%
+              <span>ACCURACY</span>
+            </div>
+      
+          </div>
+        </div>
+      
+        <!-- ITEM -->
+        <div class="loss-item">
+          <div class="loss-main" onclick="toggleLoss(this)">
+            <div class="loss-left">
+              <span class="loss-id">02</span>
+              <span class="loss-icon">🔧</span>
+              <div>
+                <h3>METER TAMPER</h3>
+                <p>Smooth unnatural decline over time.</p>
+                <div class="loss-expand">
+                    <p>
+                      Instead of sudden drops, usage declines smoothly over time.
+                      This is unnatural — real usage always fluctuates.
+                    </p>
+                    <p>
+                      The AI detects low-variance patterns that indicate manipulation.
+                    </p>
+                  </div>
+              </div>
+            </div>
+            <div class="loss-right c-orange">76%<span>ACCURACY</span></div>
+          </div>
+        </div>
+      
+        <!-- ITEM -->
+        <div class="loss-item">
+          <div class="loss-main" onclick="toggleLoss(this)">
+            <div class="loss-left">
+              <span class="loss-id">03</span>
+              <span class="loss-icon">🔒</span>
+              <div>
+                <h3>BILLING FREEZE</h3>
+                <p>Identical readings across cycles.</p>
+                <div class="loss-expand">
+                    <p>
+                      Meter readings remain constant across multiple billing cycles.
+                      Zero usage is statistically impossible for active connections.
+                    </p>
+                    <p>
+                      This is one of the highest-confidence theft signals.
+                    </p>
+                  </div>
+              </div>
+            </div>
+            <div class="loss-right c-purple">97%<span>ACCURACY</span></div>
+          </div>
+        </div>
+      
+        <!-- ITEM -->
+        <div class="loss-item">
+          <div class="loss-main" onclick="toggleLoss(this)">
+            <div class="loss-left">
+              <span class="loss-id">04</span>
+              <span class="loss-icon">🌙</span>
+              <div>
+                <h3>GHOST LOAD</h3>
+                <p>Night-only heavy usage.</p>
+                <div class="loss-expand">
+                    <p>
+                      High electricity usage occurs only during late-night hours.
+                      Often linked to unauthorized industrial usage.
+                    </p>
+                    <p>
+                      The AI compares day vs night consumption to detect anomalies.
+                    </p>
+                  </div>
+              </div>
+            </div>
+            <div class="loss-right c-blue">86%<span>ACCURACY</span></div>
+          </div>
+        </div>
+      
+        <!-- ITEM -->
+        <div class="loss-item">
+          <div class="loss-main" onclick="toggleLoss(this)">
+            <div class="loss-left">
+              <span class="loss-id">05</span>
+              <span class="loss-icon">📉</span>
+              <div>
+                <h3>SLOW BLEED</h3>
+                <p>Hidden small continuous loss.</p>
+                <div class="loss-expand">
+                    <p>
+                      Small but consistent under-reporting of usage.
+                      Hard to detect at individual level.
+                    </p>
+                    <p>
+                      AI compares with similar households to find long-term deviations.
+                    </p>
+                  </div>
+              </div>
+            </div>
+            <div class="loss-right c-yellow">70%<span>ACCURACY</span></div>
+          </div>
+        </div>
+      </div>
+</section>
+<!-- GHOST LOAD -->
+<section class="insight-section reveal">
+    <div class="insight-grid">
+      <!-- LEFT PANEL (UI CARD) -->
+      <div class="insight-card">
+        <div class="card-header">
+          ● ● ● &nbsp;&nbsp; METERMIND — METER DETAIL PANEL
+        </div>
+        <div class="chart-bar"></div>
+        <div class="fingerprint-box">
+          🌙 <span>GHOST LOAD</span>
+          <div class="sub">FINGERPRINT DETECTED • CONFIDENCE 88%</div>
+        </div>
+        <div class="info-grid">
+          <div><span>REVENUE LOST</span><b>₹2,340</b></div>
+          <div><span>DAYS ACTIVE</span><b>18 days</b></div>
+          <div><span>PEAK HOURS</span><b>10PM–2AM</b></div>
+          <div><span>CONFIDENCE</span><b>88%</b></div>
+        </div>
+        <div class="action-box">
+          ⚡ RECOMMENDED FIELD ACTION<br>
+          Night inspection 10 PM – 2 AM. Check for commercial equipment running off-hours.
+        </div>
+      </div>
+  
+      <!-- RIGHT TEXT -->
+  
+      <div class="insight-text">
+  
+        <p class="muted">
+          Every other solution shows judges a suspicious meter flag with a probability score.
+          No context. No diagnosis. No action plan.
+        </p>
+  
+        <p class="muted">
+          MeterMind shows something entirely different. You get a
+          <b>complete operational picture</b> — not just that something is wrong,
+          but what is wrong, how long it has been happening, and what to do.
+        </p>
+  
+        <p class="muted">
+          This is the difference between a smoke alarm and a fire investigator.
+        </p>
+  
+        <div class="insight-highlight">
+          "We are not showing that a meter is suspicious.  
+          We are showing exactly what is wrong, for how long,  
+          how much it has cost — and what to do about it."
+        </div>
+  
+      </div>
+  
+    </div>
+  
+</section>
+<!--NUMBERS-->
+
+<section class="numbers-section reveal">
+
+    <!-- HEADER -->
+  
+    <div class="numbers-header">
+      <div class="numbers-tag">
+        <span></span>
+        05 — WHY IT MATTERS
+      </div>
+  
+      <h1>
+        THE NUMBERS<br>
+        BEHIND THE NEED
+      </h1>
+    </div>
+  
+    <!-- GRID -->
+  
+    <div class="numbers-grid">
+  
+      <!-- 1 -->
+      <div class="num-card">
+        <h2>₹ <span class="accent">4.5B</span></h2>
+        <h4>Lost Annually in India</h4>
+        <p>
+          India loses approximately USD 4.5 billion annually due to non-technical losses
+          across distribution utilities.
+        </p>
+      </div>
+  
+      <!-- 2 -->
+      <div class="num-card">
+        <h2><span class="accent">40</span>%</h2>
+        <h4>NTL in High-Loss Nations</h4>
+        <p>
+          Non-technical losses can account for up to 40% of electricity distribution
+          in certain regions.
+        </p>
+      </div>
+  
+      <!-- 3 -->
+      <div class="num-card">
+        <h2><span class="accent">15</span>HR</h2>
+        <h4>Saved Per Engineer Monthly</h4>
+        <p>
+          Automated dashboards eliminate manual reporting workload for field engineers.
+        </p>
+      </div>
+  
+      <!-- 4 -->
+      <div class="num-card">
+        <h2><span class="accent">96</span>x</h2>
+        <h4>Data Points Per Meter Daily</h4>
+        <p>
+          Smart meters generate massive data streams — the gap is intelligent analysis.
+        </p>
+      </div>
+  
+      <!-- 5 -->
+      <div class="num-card">
+        <h2><span class="accent">82</span>%</h2>
+        <h4>Detection Accuracy</h4>
+        <p>
+          Combined accuracy across fingerprint models ensures reliable detection.
+        </p>
+      </div>
+  
+      <!-- 6 -->
+      <div class="num-card">
+        <h2><span class="accent">100</span>CR+</h2>
+        <h4>Potential Annual Recovery</h4>
+        <p>
+          Even partial detection leads to massive revenue recovery at scale.
+        </p>
+      </div>
+  
+    </div>
+  
+  </section>
+<script src="home.js"></script>
+
+</body>
+</html>
